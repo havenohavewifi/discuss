@@ -1,0 +1,90 @@
+﻿//indexOpt.cpp
+/**
+ * @brief 在表的某一属性上建立B+树索引
+ *
+ * @param [in] head  : struct dbSysHead *
+ * @param [in] fid : long
+ * @param [in] column : char*
+ * @return  bool	
+ *
+ * @author weiyu
+ * @date 2015/11/8
+ **/
+/**************************************/
+bool createIndexOn(struct dbSysHead *head, long fid, char* column);
+功能：在表的某一属性上建立B+树索引
+fid是logical fileid，即表的逻辑编号，字符串column是表上的要建立索引的属性名。只能在整型数据值上建立索引。返回值true表示索引建立成功。
+/**************************************/
+/**
+ * @brief 删除整个索引
+ *
+ * @param [in] head  : struct dbSysHead *
+ * @param [in] fid : long
+ * @param [in] column : char*
+ * @return  bool
+ *
+ * @author weiyu
+ * @date 2015/12/20
+ **/
+bool deleteIndex(struct dbSysHead *head, long fid, char* column);
+功能：删除该表某属性上的索引
+fid是logical fileid，即表的逻辑编号，字符串column是表上的要删除索引的属性名。返回值true表示索引删除成功。
+/**************************************/
+bool insertInIndex(struct dbSysHead *head, long fid, int position);
+功能：表中插入一行数据时，在表的所有索引中插入一个element；无对外接口。
+/**************************************/
+bool deleteInIndex(struct dbSysHead *head, long fid, int position);
+功能：表中删除一行数据时，在表的所有索引中删除该element；无对外接口。
+/**************************************/
+/**
+ * @brief search by fid,column name and value
+ *
+ * @param [in] head  : struct dbSysHead *
+ * @param [in] fid : long
+ * @param [in] name : char*
+ * @param [in] value : int
+ * @return  pos: int
+ *
+ * @author weiyu
+ * @date 2015/11/21
+ **/
+int searchByColumnAndValue(struct dbSysHead *head, long fid, char* column, int value);
+功能：根据属性上的索引，查找对应值的位置
+fid是logical fileid，即表的逻辑编号，字符串column是属性名，value是要查找的key值。返回值为对应记录的逻辑地址。返回值小于0时表示查找失败。
+
+
+
+
+//filter.cpp
+/**************************************/
+int tableScanSemiscopeFilter(struct dbSysHead * head, relation * temp_data_dic, int old_relation, char* attributeName, char* value,int sign);
+功能：根据表扫描的数据，进行select操作
+temp_data_dic是临时表数据字典指针，old_relation是表扫描的数据在临时表数据字典中的编号；attributeName是属性名，value是进行select的值，sign是对应的符号，包括EQUAL,NOT_EQUAL,LESS_THAN,MORE_THAN,NOT_LESS_THAN和NOT_MORE_THEN。查询得到的结果存入一个buffer中，将buffer编号记录在对应临时数据字典中。
+返回值是select之后的数据在临时数据字典中的编号。
+
+/**************************************/
+int indexScanEqualFilter(struct dbSysHead * head, int fileID, char* attributeName, char* value, relation * temp_datadic);
+功能：根据属性上的索引做等值查询
+fileID是logical fileid，即表的逻辑编号，attributeName是属性名，value是等值的查询的值，temp_datadic是临时表数据字典指针。查询得到的结果存入一个buffer中，将buffer编号记录在对应临时数据字典中。
+返回值是select之后的数据在临时数据字典中的编号。
+
+
+
+//deleteRecords.cpp
+/**************************************/
+/**
+ * @brief delete Record
+ *
+ * @param [in] head  : struct dbSysHead *
+ * @param [in] fileID : long
+ * @param [in] attributeName : char*		
+ * @param [in] value : char*
+ * @param [in] sign : int			//LESS_THAN 0, NOT_LESS_THAN 1, MORE_THAN 2, NOT_MORE_THAN 3, NOT_EQUAL 4, EQUAL 5
+ * @return  int 	//number of records deleted, -1 means error
+ *
+ * @author weiyu
+ * @date 2015/12/4
+ **/
+int deleteRecordWhere(struct dbSysHead *head, long fid, char* attributeName, char* value,int sign, int bufferID){
+功能：删除符合条件的记录
+
